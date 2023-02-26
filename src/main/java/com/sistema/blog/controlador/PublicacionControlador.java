@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sistema.blog.dto.PublicacionDTO;
-import com.sistema.blog.entidades.Publicacion;
 import com.sistema.blog.servicio.PublicacionServicio;
 
 @RestController
