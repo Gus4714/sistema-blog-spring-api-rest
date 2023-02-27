@@ -1,5 +1,8 @@
 package com.sistema.blog.entidades;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.*;
 
 @Entity
@@ -18,6 +21,9 @@ public class Publicacion {
 	
 	@Column(name = "contenido" , nullable = false)
 	private String contenido;
+	
+	@OneToMany(mappedBy = "publicacion",cascade = CascadeType.ALL,orphanRemoval = true)//SI SE ELIMINA UN PUBLICACION SE ELIMINAN TODOS LOS COMENTARIOS
+	private Set<Comentario> comentarios = new HashSet<>();
 
 	public Long getId() {
 		return id;

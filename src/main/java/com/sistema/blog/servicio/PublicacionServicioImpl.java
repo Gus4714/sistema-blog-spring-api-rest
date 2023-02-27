@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.sistema.blog.dto.PublicacionDTO;
+import com.sistema.blog.dto.PublicacionRespuesta;
 import com.sistema.blog.entidades.Publicacion;
 import com.sistema.blog.excepciones.ResourceNotFoundException;
 import com.sistema.blog.repositorio.PublicacionRepositorio;
@@ -34,12 +36,27 @@ public class PublicacionServicioImpl implements PublicacionServicio{
 	}
 
 	@Override
-	public List<PublicacionDTO> obtenerTodasLasPublicaciones(int numeroDePagina, int medidaDePagina) {
-		Pageable pageable = PageRequest.of(numeroDePagina, medidaDePagina);
+	public PublicacionRespuesta obtenerTodasLasPublicaciones(int numeroDePagina, int medidaDePagina,String ordenarPor, String sortDir) {
+		Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())?Sort.by(ordenarPor).ascending():Sort.by(ordenarPor).descending();
+		//SE APLICAN LOS PARAMETROS
+		Pageable pageable = PageRequest.of(numeroDePagina, medidaDePagina,sort);
+		//SE CARGAN LOS DATOS OBTENIDOS DE BD
 		Page<Publicacion> publicaciones = publicacionRepositorio.findAll(pageable);
-		
+		//SE CONVIERTE A TIPO PUBLICACION
 		List<Publicacion> listaDePublicaciones = publicaciones.getContent();
-		return listaDePublicaciones.stream().map(publicacion -> mapearDTO(publicacion)).collect(Collectors.toList());
+		//SE MAPEA A DTO
+		List<PublicacionDTO> contenido =  listaDePublicaciones.stream().map(publicacion -> mapearDTO(publicacion)).collect(Collectors.toList());
+		
+		PublicacionRespuesta publicacionRespuesta = new PublicacionRespuesta();
+		publicacionRespuesta.setContenido(contenido);
+		publicacionRespuesta.setNumeroPagina(publicaciones.getNumber());
+		publicacionRespuesta.setMedidaPagina(publicaciones.getSize());
+		publicacionRespuesta.setTotalElementos(publicaciones.getTotalElements());
+		publicacionRespuesta.setTotalPaginas(publicaciones.getTotalPages());
+		publicacionRespuesta.setUltima(publicaciones.isLast());
+		
+		return publicacionRespuesta;
+		
 	}
 	
 	// Convertimos de DTO a entidad para persistir
