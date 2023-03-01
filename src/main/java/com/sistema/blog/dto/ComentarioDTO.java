@@ -1,12 +1,25 @@
 package com.sistema.blog.dto;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 public class ComentarioDTO {
 
 	private long id;
 	
+	@NotEmpty 
+	@Size(min = 2 )
 	private String nombre;
+	
+	@NotEmpty 
+	@Email
 	private String email;
+	
+	@NotEmpty 
+	@Size(min = 10 )
 	private String cuerpo;
+	
 	public long getId() {
 		return id;
 	}

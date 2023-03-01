@@ -3,6 +3,7 @@ package com.sistema.blog.servicio;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +20,9 @@ import com.sistema.blog.repositorio.PublicacionRepositorio;
 @Service
 public class PublicacionServicioImpl implements PublicacionServicio{
 
+	@Autowired
+	ModelMapper modelMapper;
+	
 	@Autowired
 	PublicacionRepositorio publicacionRepositorio;
 	
@@ -61,24 +65,13 @@ public class PublicacionServicioImpl implements PublicacionServicio{
 	
 	// Convertimos de DTO a entidad para persistir
 	public Publicacion mapearEntidad(PublicacionDTO publicacionDTO) {
-		Publicacion publicacion = new Publicacion();
-		
-		publicacion.setTitulo(publicacionDTO.getTitulo());
-		publicacion.setContenido(publicacionDTO.getContenido());
-		publicacion.setDescripcion(publicacionDTO.getDescripcion());
-		
+		Publicacion publicacion = modelMapper.map(publicacionDTO, Publicacion.class);	
 		return publicacion;	
 	}
 	
 	//Convertimos de entidad a DTO para responder
 	public PublicacionDTO mapearDTO(Publicacion publicacion) {
-		PublicacionDTO publicacionRespuesta = new PublicacionDTO();
-		
-		publicacionRespuesta.setId(publicacion.getId());
-		publicacionRespuesta.setTitulo(publicacion.getTitulo());
-		publicacionRespuesta.setContenido(publicacion.getContenido());
-		publicacionRespuesta.setDescripcion(publicacion.getDescripcion());
-		
+		PublicacionDTO publicacionRespuesta = modelMapper.map(publicacion, PublicacionDTO.class);	
 		return publicacionRespuesta;
 	}
 

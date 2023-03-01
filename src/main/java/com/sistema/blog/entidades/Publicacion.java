@@ -5,6 +5,8 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name="publicaciones" , uniqueConstraints = {@UniqueConstraint(columnNames = {"titulo"})})
 public class Publicacion {
@@ -22,6 +24,7 @@ public class Publicacion {
 	@Column(name = "contenido" , nullable = false)
 	private String contenido;
 	
+	@JsonBackReference
 	@OneToMany(mappedBy = "publicacion",cascade = CascadeType.ALL,orphanRemoval = true)//SI SE ELIMINA UN PUBLICACION SE ELIMINAN TODOS LOS COMENTARIOS
 	private Set<Comentario> comentarios = new HashSet<>();
 
@@ -67,6 +70,14 @@ public class Publicacion {
 
 	public Publicacion() {
 		super();
+	}
+
+	public Set<Comentario> getComentarios() {
+		return comentarios;
+	}
+
+	public void setComentarios(Set<Comentario> comentarios) {
+		this.comentarios = comentarios;
 	}
 	
 	
